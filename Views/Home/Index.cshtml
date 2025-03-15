@@ -1,0 +1,66 @@
+﻿@model LibraryManagementSystem.Models.HomePageViewModel
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h2>Welcome to the Library Management System</h2>
+
+@if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") == "Member")
+{
+    <h3>List of Books</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Publisher</th>
+                <th>Year</th>
+                <th>Pages</th>
+                <th>Language</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model.Books)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.Publisher</td>
+                    <td>@book.Year</td>
+                    <td>@book.Pages</td>
+                    <td>@book.Language</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Books Borrowed by You</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var borrowing in Model.BorrowedBooks)
+            {
+                <tr>
+                    <td>@borrowing.Book.Title</td>
+                    <td>@borrowing.Book.Author</td>
+                    <td>@borrowing.BorrowDate.ToShortDateString()</td>
+                    <td>@borrowing.ReturnDate.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <partial name="_LoginPartial" />
+}
