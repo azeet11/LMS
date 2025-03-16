@@ -1,3 +1,4 @@
+// File: Controllers/HomeController.cs
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,11 @@ namespace LibraryManagementSystem.Controllers
                     Books = books,
                     BorrowedBooks = borrowedBooks
                 };
+
+                if (TempData["ErrorMessage"] != null)
+                {
+                    ModelState.AddModelError(string.Empty, TempData["ErrorMessage"].ToString());
+                }
 
                 return View(viewModel);
             }

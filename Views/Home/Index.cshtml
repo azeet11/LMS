@@ -1,4 +1,5 @@
-﻿@model LibraryManagementSystem.Models.HomePageViewModel
+﻿<!-- File: Views/Home/Index.cshtml -->
+@model LibraryManagementSystem.Models.HomePageViewModel
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 
@@ -6,11 +7,13 @@
     ViewData["Title"] = "Home Page";
 }
 
-<h2>Welcome to the Library Management System</h2>
+<h2>Welcome to the Library Management System </h2>
+<h3>@HttpContextAccessor.HttpContext.Session.GetString("UserName")!</h3>
 
 @if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") == "Member")
 {
     <h3>List of Books</h3>
+    <div asp-validation-summary="All" class="text-danger"></div>
     <table class="table">
         <thead>
             <tr>
@@ -20,6 +23,7 @@
                 <th>Year</th>
                 <th>Pages</th>
                 <th>Language</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -32,6 +36,12 @@
                     <td>@book.Year</td>
                     <td>@book.Pages</td>
                     <td>@book.Language</td>
+                    <td>
+                        <form asp-controller="Books" asp-action="Borrow" method="post">
+                            <input type="hidden" name="bookId" value="@book.Id" />
+                            <button type="submit" class="btn btn-primary">Borrow</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -60,7 +70,19 @@
         </tbody>
     </table>
 }
+
+@* @section Scripts { *@
+@*     <script> *@
+@*         @if (ViewBag.ErrorMessage != null) *@
+@*         { *@
+@*             <text> *@
+@*                     alert('@ViewBag.ErrorMessage'); *@
+@*             </text> *@
+@*         } *@
+@*     </script> *@
+@* } *@
+
 else
 {
-    <partial name="_LoginPartial" />
+<partial name="_LoginPartial" />
 }

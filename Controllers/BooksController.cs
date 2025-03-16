@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// File: Controllers/BooksController.cs
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryManagementSystem;
 
-[Authorize(Roles = "Admin")]
+
 public class BooksController : Controller
 {
     private readonly LibraryContext _context;
@@ -16,6 +17,7 @@ public class BooksController : Controller
     }
 
     // GET: Books
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Index()
     {
         return View(await _context.Books.ToListAsync());
@@ -46,8 +48,6 @@ public class BooksController : Controller
     }
 
     // POST: Books/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Title,Author,Publisher,Year,Pages,Language")] Book book)
@@ -78,8 +78,6 @@ public class BooksController : Controller
     }
 
     // POST: Books/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Publisher,Year,Pages,Language")] Book book)
@@ -148,5 +146,39 @@ public class BooksController : Controller
     private bool BookExists(int id)
     {
         return _context.Books.Any(e => e.Id == id);
+    }
+
+    // Add the Borrow action method
+    [Authorize(Roles = "Member")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Borrow(int bookId)
+    {
+        var userId = HttpContext.Session.GetString("UserId");
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "Home");
+        }
+
+        var userBorrowingsCount = _context.Borrowings.Count(b => b.UserId == int.Parse(userId));
+
+        if (userBorrowingsCount >= 3)
+        {
+            TempData["ErrorMessage"] = "You cannot borrow more than 3 books.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var borrowing = new Borrowing
+        {
+            UserId = int.Parse(userId),
+            BookId = bookId,
+            BorrowDate = DateTime.Now,
+            ReturnDate = DateTime.Now.AddDays(14) // Example return date
+        };
+
+        _context.Borrowings.Add(borrowing);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Index", "Home");
     }
 }
