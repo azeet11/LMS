@@ -2,6 +2,7 @@
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -16,7 +17,7 @@ namespace LibraryManagementSystem.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string bookAuthor, string searchString)
         {
             var userRole = HttpContext.Session.GetString("UserRole");
             var userId = HttpContext.Session.GetString("UserId");
@@ -27,7 +28,24 @@ namespace LibraryManagementSystem.Controllers
             }
             else if (userRole == "Member" && !string.IsNullOrEmpty(userId))
             {
-                var books = _context.Books.ToList();
+                // Use LINQ to get list of authors.
+                IQueryable<string> authorQuery = from b in _context.Books
+                                                 orderby b.Author
+                                                 select b.Author;
+
+                var books = from b in _context.Books
+                            select b;
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    books = books.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+                }
+
+                if (!string.IsNullOrEmpty(bookAuthor))
+                {
+                    books = books.Where(x => x.Author == bookAuthor);
+                }
+
                 var borrowedBooks = _context.Borrowings
                     .Include(b => b.Book) // Include Book details
                     .Where(b => b.UserId == int.Parse(userId))
@@ -35,7 +53,10 @@ namespace LibraryManagementSystem.Controllers
 
                 var viewModel = new HomePageViewModel
                 {
-                    Books = books,
+                    Author = new SelectList(await authorQuery.Distinct().ToListAsync()),
+                    Books = await books.ToListAsync(),
+                    BookAuthor = bookAuthor,
+                    SearchString = searchString,
                     BorrowedBooks = borrowedBooks
                 };
 
@@ -49,6 +70,7 @@ namespace LibraryManagementSystem.Controllers
 
             return RedirectToAction("Login");
         }
+
 
         public IActionResult Login()
         {

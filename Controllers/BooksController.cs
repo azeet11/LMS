@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LibraryManagementSystem;
 
@@ -18,9 +19,40 @@ public class BooksController : Controller
 
     // GET: Books
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string bookAuthor, string searchString)
     {
-        return View(await _context.Books.ToListAsync());
+        if (_context.Books == null)
+        {
+            return Problem("Entity set 'LibraryContext.Books' is null.");
+        }
+
+        // Use LINQ to get list of authors.
+        IQueryable<string> authorQuery = from b in _context.Books
+                                         orderby b.Author
+                                         select b.Author;
+
+        var books = from b in _context.Books
+                    select b;
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            books = books.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+        }
+
+        if (!string.IsNullOrEmpty(bookAuthor))
+        {
+            books = books.Where(x => x.Author == bookAuthor);
+        }
+
+        var booksearchVM = new HomePageViewModel
+        {
+            Author = new SelectList(await authorQuery.Distinct().ToListAsync()),
+            Books = await books.ToListAsync(),
+            //BookAuthor = bookAuthor,
+            //SearchString = searchString
+        };
+
+        return View(booksearchVM);
     }
 
     // GET: Books/Details/5

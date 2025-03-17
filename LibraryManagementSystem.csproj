@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Remove="BorrowingsController.cs" />
+    <Compile Remove="Models\BookSearchViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>

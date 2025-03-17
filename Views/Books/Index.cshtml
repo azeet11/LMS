@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LibraryManagementSystem.Models.Book>
+﻿@model LibraryManagementSystem.Models.HomePageViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,57 +9,70 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="Books" asp-action="Index" method="get">
+    <p>
+        <select asp-for="BookAuthor" asp-items="Model.Author">
+            <option value="">Author</option>
+        </select>
+
+        <label>Title: <input type="text" asp-for="SearchString" /></label>
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.Books![0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Author)
+                @Html.DisplayNameFor(model => model.Books![0].Author)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Publisher)
+                @Html.DisplayNameFor(model => model.Books![0].Publisher)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Year)
+                @Html.DisplayNameFor(model => model.Books![0].Year)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Pages)
+                @Html.DisplayNameFor(model => model.Books![0].Pages)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Language)
+                @Html.DisplayNameFor(model => model.Books![0].Language)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Publisher)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pages)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Language)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Books!)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Publisher)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pages)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Language)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

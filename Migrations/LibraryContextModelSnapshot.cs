@@ -54,7 +54,7 @@ namespace LibraryManagementSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Borrowing", b =>
@@ -81,7 +81,7 @@ namespace LibraryManagementSystem.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Borrowings");
+                    b.ToTable("Borrowings", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.User", b =>
@@ -114,7 +114,7 @@ namespace LibraryManagementSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Borrowing", b =>
