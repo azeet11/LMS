@@ -69,7 +69,7 @@ public class BorrowingsController : Controller
             return NotFound();
         }
 
-        var borrowing = await _context.Borrowings.FindAsync(id);
+        var borrowing = await _context.Borrowings.Include(b => b.Book).FirstOrDefaultAsync(b => b.Id == id);
         if (borrowing == null)
         {
             return NotFound();
@@ -82,7 +82,7 @@ public class BorrowingsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,BookId,BorrowDate,ReturnDate")] Borrowing borrowing)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,BookId,BorrowDate,ReturnDate,Book")] Borrowing borrowing)
     {
         if (id != borrowing.Id)
         {
