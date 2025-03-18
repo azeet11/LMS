@@ -92,6 +92,7 @@ namespace LibraryManagementSystem.Controllers
                     HttpContext.Session.SetString("UserId", user.Id.ToString());
                     HttpContext.Session.SetString("UserName", user.Name);
                     HttpContext.Session.SetString("UserRole", user.Role);
+                    HttpContext.Session.SetString("UserType", user.UserType);   
 
                     var claims = new List<Claim>
                     {
