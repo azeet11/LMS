@@ -18,7 +18,11 @@ public class BorrowingsController : Controller
     // GET: Borrowings
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Borrowings.ToListAsync());
+        var borrowings = _context.Borrowings
+            .Include(b => b.Book) // Include Book details
+            .ToListAsync();
+        return View(await borrowings);
+        //return View(await _context.Borrowings.ToListAsync());
     }
 
     // GET: Borrowings/Details/5

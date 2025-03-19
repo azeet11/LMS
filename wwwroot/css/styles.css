@@ -16,9 +16,12 @@ body {
     width: 250px;
     background: #111;
     color: white;
-    height: 100vh;
+    height: 100vh; /* Full height of the viewport */
     padding: 20px;
-    float: left; /* Add float to sidebar */
+    position: fixed; /* Keeps the sidebar fixed on the left */
+    top: 0; /* Aligns it to the top */
+    left: 0; /* Ensures it's positioned on the left side */
+    overflow-y: auto; /* Allows scrolling if content overflows */
 }
 
     .sidebar .logo {
@@ -140,3 +143,35 @@ td i {
     color: red;
     cursor: pointer;
 }
+
+/* Pagination Container */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    list-style: none;
+    padding: 0;
+}
+
+    .pagination a, .pagination span {
+        color: #007bff; /* Link color */
+        padding: 8px 16px;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        margin: 0 4px;
+        border-radius: 4px;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .pagination a:hover {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+    .pagination .active-page {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+        cursor: default;
+    }

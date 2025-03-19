@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using X.PagedList.Extensions;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -17,7 +18,7 @@ namespace LibraryManagementSystem.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string bookAuthor, string searchString)
+        public async Task<IActionResult> Index(string bookAuthor, string searchString, int? page)
         {
             var userRole = HttpContext.Session.GetString("UserRole");
             var userId = HttpContext.Session.GetString("UserId");
@@ -46,6 +47,9 @@ namespace LibraryManagementSystem.Controllers
                     books = books.Where(x => x.Author == bookAuthor);
                 }
 
+                int pageSize = 5;
+                int pageNumber = (page ?? 1);
+
                 var borrowedBooks = _context.Borrowings
                     .Include(b => b.Book) // Include Book details
                     .Where(b => b.UserId == int.Parse(userId))
@@ -54,22 +58,22 @@ namespace LibraryManagementSystem.Controllers
                 var viewModel = new HomePageViewModel
                 {
                     Author = new SelectList(await authorQuery.Distinct().ToListAsync()),
-                    Books = await books.ToListAsync(),
+                    Books = books.ToPagedList(pageNumber, pageSize),
                     BookAuthor = bookAuthor,
                     SearchString = searchString,
                     BorrowedBooks = borrowedBooks
                 };
 
-                if (TempData["ErrorMessage"] != null)
-                {
-                    ModelState.AddModelError(string.Empty, TempData["ErrorMessage"].ToString());
-                }
+                // Clear existing model state errors
+                ModelState.Clear();
 
                 return View(viewModel);
             }
 
             return RedirectToAction("Login");
         }
+
+
 
 
         public IActionResult Login()
@@ -92,13 +96,13 @@ namespace LibraryManagementSystem.Controllers
                     HttpContext.Session.SetString("UserId", user.Id.ToString());
                     HttpContext.Session.SetString("UserName", user.Name);
                     HttpContext.Session.SetString("UserRole", user.Role);
-                    HttpContext.Session.SetString("UserType", user.UserType);   
+                    HttpContext.Session.SetString("UserType", user.UserType);
 
                     var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, user.Name),
-                        new Claim(ClaimTypes.Role, user.Role)
-                    };
+            {
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
 
                     var claimsIdentity = new ClaimsIdentity(claims, "CookieAuthentication");
                     var authProperties = new AuthenticationProperties
@@ -123,6 +127,7 @@ namespace LibraryManagementSystem.Controllers
 
             return View(model);
         }
+
 
         public async Task<IActionResult> Logout()
         {

@@ -22,5 +22,6 @@ namespace LibraryManagementSystem.Models
 
         // Navigation property for Book
         public Book? Book { get; set; }
+
     }
 }

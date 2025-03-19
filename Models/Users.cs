@@ -11,6 +11,7 @@ public class User
     public string Name { get; set; }
 
     [Required]
+    [EmailAddress]
     public string Email { get; set; }
 
     [Required]
@@ -21,4 +22,5 @@ public class User
 
     [Required]
     public string UserType { get; set; } // Student or Staff
+
 }

@@ -6,7 +6,7 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+<link rel="stylesheet" href="~/css/error.css" />
 <h2>Welcome to the Library Management System </h2>
 <h3>@HttpContextAccessor.HttpContext.Session.GetString("UserName")!</h3>
 
@@ -83,16 +83,6 @@
     </table>
 }
 
-@* @section Scripts { *@
-@*     <script> *@
-@*         @if (ViewBag.ErrorMessage != null) *@
-@*         { *@
-@*             <text> *@
-@*                     alert('@ViewBag.ErrorMessage'); *@
-@*             </text> *@
-@*         } *@
-@*     </script> *@
-@* } *@
 
 else
 {
