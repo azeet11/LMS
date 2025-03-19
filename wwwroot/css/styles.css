@@ -175,3 +175,28 @@ td i {
         border-color: #007bff;
         cursor: default;
     }
+
+.summary-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.summary-item {
+    flex: 1;
+    margin: 0 10px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    text-align: center;
+}
+
+    .summary-item h3 {
+        margin-bottom: 10px;
+    }
+
+    .summary-item p {
+        font-size: 1.5em;
+        font-weight: bold;
+    }

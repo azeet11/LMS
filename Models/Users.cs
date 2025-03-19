@@ -22,5 +22,4 @@ public class User
 
     [Required]
     public string UserType { get; set; } // Student or Staff
-
 }

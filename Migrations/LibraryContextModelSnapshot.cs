@@ -54,7 +54,7 @@ namespace LibraryManagementSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Borrowing", b =>
@@ -81,9 +81,7 @@ namespace LibraryManagementSystem.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Borrowings");
+                    b.ToTable("Borrowings", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.User", b =>
@@ -116,7 +114,7 @@ namespace LibraryManagementSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Borrowing", b =>
@@ -127,15 +125,7 @@ namespace LibraryManagementSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LibraryManagementSystem.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Book");
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

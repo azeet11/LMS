@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using X.PagedList.Extensions;
 
 namespace LibraryManagementSystem;
 
@@ -16,9 +18,41 @@ public class UsersController : Controller
     }
 
     // GET: Users
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string userType, string searchString, int? page)
     {
-        return View(await _context.Users.ToListAsync());
+        if (_context.Users == null)
+        {
+            return Problem("Entity set 'LibraryContext.Users' is null.");
+        }
+
+        IQueryable<string> userTypeQuery = from b in _context.Users
+                                         orderby b.UserType
+                                         select b.UserType;
+
+
+        var users = from b in _context.Users
+                        select b;
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            users = users.Where(s => s.Name!.ToUpper().Contains(searchString.ToUpper()));
+        }
+
+        if (!string.IsNullOrEmpty(userType))
+        {
+            users = users.Where(x => x.UserType == userType);
+        }
+
+        int pageSize = 5;
+        int pageNumber = (page ?? 1);
+
+        var UsersearchVM = new HomePageViewModel
+        {
+            UserType = new SelectList(await userTypeQuery.Distinct().ToListAsync()),
+            Users = users.ToPagedList(pageNumber, pageSize)
+        };
+
+        return View(UsersearchVM);
     }
 
     // GET: Users/Details/5

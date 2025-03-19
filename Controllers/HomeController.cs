@@ -61,7 +61,7 @@ namespace LibraryManagementSystem.Controllers
                     Books = books.ToPagedList(pageNumber, pageSize),
                     BookAuthor = bookAuthor,
                     SearchString = searchString,
-                    BorrowedBooks = borrowedBooks
+                    BorrowedBooks = borrowedBooks.ToPagedList(pageNumber, pageSize)
                 };
 
                 // Clear existing model state errors
@@ -72,9 +72,6 @@ namespace LibraryManagementSystem.Controllers
 
             return RedirectToAction("Login");
         }
-
-
-
 
         public IActionResult Login()
         {
@@ -142,14 +139,38 @@ namespace LibraryManagementSystem.Controllers
             return View();
         }
 
-        public IActionResult AdminDashboard()
+        public async Task<IActionResult> AdminDashboard()
         {
             if (HttpContext.Session.GetString("UserRole") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            return View();
+            var totalBorrowedBooks = await _context.Borrowings.CountAsync();
+            var totalOverdueBooks = await _context.Borrowings.CountAsync(b => b.ReturnDate < DateTime.Now);
+
+            var topAdmins = await _context.Users
+                .Where(u => u.Role == "Admin")
+                .OrderBy(u => u.Id)
+                .Take(3)
+                .ToListAsync();
+
+            var topOverdueBorrowers = await _context.Borrowings
+                .Include(b => b.User)
+                .Where(b => b.ReturnDate < DateTime.Now)
+                .OrderBy(b => b.ReturnDate)
+                .Take(3)
+                .ToListAsync();
+
+            var viewModel = new AdminDashboardViewModel
+            {
+                TotalBorrowedBooks = totalBorrowedBooks,
+                TotalOverdueBooks = totalOverdueBooks,
+                TopAdmins = topAdmins,
+                TopOverdueBorrowers = topOverdueBorrowers
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult AccessDenied()

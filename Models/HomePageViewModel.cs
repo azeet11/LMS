@@ -9,5 +9,8 @@ public class HomePageViewModel
     public IPagedList<Book> Books { get; set; }
     public string BookAuthor { get; set; }
     public string SearchString { get; set; }
-    public List<Borrowing> BorrowedBooks { get; set; }
+    public IPagedList<Borrowing> BorrowedBooks { get; set; }
+    public IPagedList<User> Users { get; set; }
+    public SelectList UserType { get; set; }
+    public string UsersType { get; set; }
 }

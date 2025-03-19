@@ -1,40 +1,82 @@
 ﻿using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace LibraryManagementSystem.Controllers
+namespace LibraryManagementSystem.Controllers;
+
+public class ReportsController : Controller
 {
-    public class ReportsController : Controller
+    private readonly LibraryContext _context;
+
+    public ReportsController(LibraryContext context)
     {
-        private readonly LibraryContext _context;
+        _context = context;
+    }
 
-        public ReportsController(LibraryContext context)
-        {
-            _context = context;
-        }
+    // GET: Reports/Reports
+    public IActionResult Index()
+    {
+        return View();
+    }
+    // GET: Reports/BorrowedBooksPartial
+    public async Task<IActionResult> BorrowedBooksPartial()
+    {
+        var borrowedBooks = await _context.Borrowings
+            .Include(b => b.Book)
+            .Include(b => b.User)
+            .ToListAsync();
+        return PartialView("_BorrowedBooksPartial", borrowedBooks);
+    }
 
-        // GET: Reports/BorrowedBooks
-        public IActionResult BorrowedBooks()
-        {
-            var borrowedBooks = _context.Borrowings.ToList();
-            return View(borrowedBooks);
-        }
+    // GET: Reports/OverduedBooksPartial
+    public async Task<IActionResult> OverduedBooksPartial()
+    {
+        var overduedBooks = await _context.Borrowings
+            .Include(b => b.Book)
+            .Include(b => b.User)
+            .Where(b => b.ReturnDate < DateTime.Now)
+            .ToListAsync();
+        return PartialView("_OverduedBooksPartial", overduedBooks);
+    }
 
-        // GET: Reports/OverduedBooks
-        public IActionResult OverduedBooks()
-        {
-            var overduedBooks = _context.Borrowings.Where(b => b.ReturnDate < DateTime.Now).ToList();
-            return View(overduedBooks);
-        }
+    public async Task<IActionResult> PopularBooksPartial()
+    {
+        var popularBooks = await _context.Borrowings
+            .Include(b => b.Book)
+            .GroupBy(b => b.BookId)
+            .OrderByDescending(g => g.Count())
+            .Select(g => new { Book = g.First().Book, Count = g.Count() })
+            .ToListAsync();
+        return PartialView("_PopularBooksPartial", popularBooks);
+    }
 
-        // GET: Reports/PopularBooks
-        public IActionResult PopularBooks()
+    // GET: Reports/TotalBorrowedBooks
+    public async Task<int> TotalBorrowedBooks()
+    {
+        return await _context.Borrowings.CountAsync();
+    }
+
+    // GET: Reports/TotalOverdueBooks
+    public async Task<int> TotalOverdueBooks()
+    {
+        return await _context.Borrowings.CountAsync(b => b.ReturnDate < DateTime.Now);
+    }
+
+    // GET: Reports/LoadPartialView
+    public async Task<IActionResult> LoadPartialView(string partialView)
+    {
+        if (partialView == "BorrowedBooksPartial")
         {
-            var popularBooks = _context.Borrowings
-                .GroupBy(b => b.BookId)
-                .OrderByDescending(g => g.Count())
-                .Select(g => new { BookId = g.Key, Count = g.Count() })
-                .ToList();
-            return View(popularBooks);
+            return await BorrowedBooksPartial();
         }
+        else if (partialView == "OverduedBooksPartial")
+        {
+            return await OverduedBooksPartial();
+        }
+        else if (partialView == "PopularBooksPartial")
+        {
+            return await PopularBooksPartial();
+        }
+        return BadRequest();
     }
 }

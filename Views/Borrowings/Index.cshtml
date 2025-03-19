@@ -1,4 +1,5 @@
-﻿@model IEnumerable<LibraryManagementSystem.Models.Borrowing>
+﻿@model LibraryManagementSystem.Models.HomePageViewModel
+@using X.PagedList.Mvc.Core;
 
 @{
     ViewData["Title"] = "Index";
@@ -9,29 +10,35 @@
 <p>
     <a class="btn btn-outline-success" asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="Borrowings" asp-action="Index">
+    <label>Title: <input type="text" asp-for="SearchString" class="search-bar" /></label>
+    <input type="submit" class="btn btn-sm btn-group-vertical btn-outline-primary" value="Search" />
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserId)
+                @Html.DisplayNameFor(model => model.BorrowedBooks[0].UserId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Book.Title)
+                @Html.DisplayNameFor(model => model.Books[0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BookId)
+                @Html.DisplayNameFor(model => model.BorrowedBooks[0].BookId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BorrowDate)
+                @Html.DisplayNameFor(model => model.BorrowedBooks[0].BorrowDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReturnDate)
+                @Html.DisplayNameFor(model => model.BorrowedBooks[0].ReturnDate)
             </th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.BorrowedBooks) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.UserId)
@@ -57,3 +64,7 @@
 }
     </tbody>
 </table>
+
+<div class="text-center">
+    @Html.PagedListPager(Model.BorrowedBooks, page => Url.Action("Index", new { page, searchString = ViewBag.CurrentSearch }))
+</div>

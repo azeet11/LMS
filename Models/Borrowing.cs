@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryManagementSystem.Models
 {
@@ -22,6 +21,9 @@ namespace LibraryManagementSystem.Models
 
         // Navigation property for Book
         public Book? Book { get; set; }
+
+        // Navigation property for User
+        public User? User { get; set; }
 
     }
 }

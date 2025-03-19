@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using X.PagedList;
 using X.PagedList.Extensions;
 
 namespace LibraryManagementSystem;

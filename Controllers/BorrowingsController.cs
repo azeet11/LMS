@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
+using X.PagedList.Extensions;
 
 namespace LibraryManagementSystem;
 
@@ -16,13 +17,30 @@ public class BorrowingsController : Controller
     }
 
     // GET: Borrowings
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string searchString,int? page)
     {
-        var borrowings = _context.Borrowings
-            .Include(b => b.Book) // Include Book details
-            .ToListAsync();
-        return View(await borrowings);
-        //return View(await _context.Borrowings.ToListAsync());
+        if (_context.Borrowings == null)
+        {
+            return Problem("Entity set 'LibraryContext.Borrowings' is null.");
+        }
+
+        var borrowing = from b in _context.Borrowings.Include(b => b.Book)
+                    select b;
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            borrowing = borrowing.Where(s => s.Book!.Title!.ToUpper().Contains(searchString.ToUpper()));
+        }
+
+        int pageSize = 5;
+        int pageNumber = (page ?? 1);
+
+        var bookborrowedsearchVM = new HomePageViewModel
+        {
+            BorrowedBooks = borrowing.ToPagedList(pageNumber, pageSize)
+        };
+
+        return View(bookborrowedsearchVM);
     }
 
     // GET: Borrowings/Details/5
