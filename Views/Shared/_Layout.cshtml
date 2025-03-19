@@ -49,8 +49,8 @@
             @if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") == "Member")
             {
                 <ul class="menu align-content-center">
-                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Books" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Books" class="text-white navbar-brand"> Books</a>
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                        <a asp-action="Index" asp-controller="Home" class="text-white navbar-brand"> Home</a>
                     </li>
                     <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Borrowings" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
                         <a asp-action="Index" asp-controller="Borrowings" class="text-white navbar-brand">Borrowing</a>
@@ -68,8 +68,8 @@
                 <div class="user-info">
                     <span>@HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
                     <small>@HttpContextAccessor.HttpContext.Session.GetString("UserRole") - @HttpContextAccessor.HttpContext.Session.GetString("UserType")</small>
-                    
                 </div>
+                <div class="right-section"><strong id="currentTime"></strong></div>
             </div>
 
             <main role="main" class="pb-3">
@@ -91,6 +91,20 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script>
+        function updateTime() 
+        {
+            const now = new Date();
+            const formattedTime = now.toLocaleTimeString('en-US', 
+                                    { hour: '2-digit', minute: '2-digit', second: '2-digit' }) 
+                                    + ', ' + now.toLocaleDateString('en-US', 
+                                    { month: 'short', day: '2-digit', year: 'numeric' });
+            document.getElementById('currentTime').innerText = formattedTime;
+        }
 
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call to set the time immediately
+    </script>
 </body>
 </html>

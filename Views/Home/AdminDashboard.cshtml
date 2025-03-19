@@ -13,7 +13,6 @@
 <div class="col-md-9">
     <div class="d-flex justify-content-between align-items-center py-3">
         <h2>Admin Dashboard</h2>
-        <div class="right-section"><strong id="currentTime"></strong></div>
     </div>
     <div class="row">
         <!-- Left Side: Chart -->
@@ -67,15 +66,5 @@
             }]
         }
     });
-
-    function updateTime() {
-        const now = new Date();
-        const formattedTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ', ' +
-                              now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
-        document.getElementById('currentTime').innerText = formattedTime;
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime(); // Initial call to set the time immediately
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

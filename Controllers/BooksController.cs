@@ -214,6 +214,8 @@ public class BooksController : Controller
         _context.Borrowings.Add(borrowing);
         await _context.SaveChangesAsync();
 
-        return RedirectToAction("Index", "Home");
+        TempData["SuccessMessage"] = "Successfully borrowed";
+        return RedirectToAction(nameof(Index));
     }
+
 }

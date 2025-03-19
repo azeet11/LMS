@@ -47,6 +47,11 @@ namespace LibraryManagementSystem.Controllers
                     books = books.Where(x => x.Author == bookAuthor);
                 }
 
+                if (TempData["ErrorMessage"] != null)
+                {
+                    ModelState.AddModelError(string.Empty, TempData["ErrorMessage"].ToString());
+                }
+
                 int pageSize = 5;
                 int pageNumber = (page ?? 1);
 
@@ -70,7 +75,7 @@ namespace LibraryManagementSystem.Controllers
                 return View(viewModel);
             }
 
-            return RedirectToAction("Login");
+            return View("Login", new LoginViewModel());
         }
 
         public IActionResult Login()
@@ -132,11 +137,6 @@ namespace LibraryManagementSystem.Controllers
             HttpContext.Session.Clear();
             await HttpContext.SignOutAsync("CookieAuthentication");
             return RedirectToAction("Index", "Home");
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         public async Task<IActionResult> AdminDashboard()
