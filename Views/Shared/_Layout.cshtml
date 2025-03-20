@@ -62,9 +62,6 @@
                     <li class="@(IsActive("Borrowings", "Index") ? "active" : "")">
                         <a asp-action="Index" asp-controller="Borrowings" class="navbar-brand @(IsActive("Borrowings", "Index") ? "text-dark" : "text-white")"><img src="~/img/icons/borrowings.svg" height="20" width="20" alt="Borrowing" class="align-cen">Borrowing</a>
                     </li>
-                    <li>
-                        <a asp-action="Logout" asp-controller="Home" class="btn btn-danger"> Log Out</a>
-                    </li>
                 </ul>
                 <div class="logout">
                     <a asp-action="Logout" asp-controller="Home" class="navbar-brand text-white"><img src="~/img/icons/logout.svg" height="20" width="20" alt="Logout" class="align-cen"> Log Out</a>
