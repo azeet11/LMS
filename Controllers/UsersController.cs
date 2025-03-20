@@ -127,7 +127,24 @@ public class UsersController : Controller
         {
             try
             {
-                _context.Update(user);
+                var existingUser = await _context.Users.FindAsync(id);
+                if (existingUser == null)
+                {
+                    return NotFound();
+                }
+
+                existingUser.Name = user.Name;
+                existingUser.Email = user.Email;
+                existingUser.Role = user.Role;
+                existingUser.UserType = user.UserType;
+
+                // Only update the password if a new one is provided
+                if (!string.IsNullOrEmpty(user.Password) && user.Password != "********")
+                {
+                    existingUser.Password = user.Password;
+                }
+
+                _context.Update(existingUser);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
