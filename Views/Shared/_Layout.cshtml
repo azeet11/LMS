@@ -9,7 +9,7 @@
     <title>@ViewData["Title"] - LibraryManagementSystem</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="icon" type="image/png" href="~/favicon.png" />
+    <link rel="icon" type="image/svg" href="~/img/logo.svg" />
     <link rel="stylesheet" href="~/css/styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 
@@ -20,25 +20,25 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="logo">
-                <img src="~/favicon.png" alt="Library Management System" class="align-cen">
+                <img src="~/img/logo.svg" alt="Library Management System" class="align-cen">
             </div>
             @if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") == "Admin")
             {
                 <ul class="menu align-content-center">
                     <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "AdminDashboard" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Home" class="text-white navbar-brand">Dashboard</a>
+                        <a asp-action="Index" asp-controller="Home" class="navbar-brand @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "AdminDashboard" ? "text-dark" : "text-white")">Dashboard</a>
                     </li>
                     <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Books" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Books" class="text-white navbar-brand"> Books</a>
+                        <a asp-action="Index" asp-controller="Books" class="navbar-brand @(ViewContext.RouteData.Values["controller"]?.ToString() == "Books" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "text-dark" : "text-white")"> Books</a>
                     </li>
                     <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Borrowings" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Borrowings" class="text-white navbar-brand">Borrowing</a>
+                        <a asp-action="Index" asp-controller="Borrowings" class="navbar-brand @(ViewContext.RouteData.Values["controller"]?.ToString() == "Borrowings" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "text-dark" : "text-white")">Borrowing</a>
                     </li>
                     <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Users" class="text-white navbar-brand">Users</a>
+                        <a asp-action="Index" asp-controller="Users" class="navbar-brand @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "text-dark" : "text-white")">Users</a>
                     </li>
                     <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Reports" class="text-white navbar-brand">Reports</a>
+                        <a asp-action="Index" asp-controller="Reports" class="navbar-brand @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "text-dark" : "text-white")">Reports</a>
                     </li>
                     <li>
                         <a asp-action="Logout" asp-controller="Home" class="btn btn-danger"> Log Out</a>
