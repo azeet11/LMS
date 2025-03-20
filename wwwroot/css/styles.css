@@ -21,6 +21,8 @@ body {
     top: 0; /* Aligns it to the top */
     left: 0; /* Ensures it's positioned on the left side */
     overflow-y: auto; /* Allows scrolling if content overflows */
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
 }
 
     .sidebar .logo {
@@ -28,36 +30,73 @@ body {
         margin: 20px 0;
     }
 
-    .sidebar img {
-        width: 50%;
-        filter: invert(100%);
-    }
+        .sidebar .logo img {
+            width: 50%;
+            filter: invert(100%);
+        }
 
     .sidebar .menu {
         list-style: none;
     }
+
     .sidebar ul.menu {
         padding: 0;
     }
 
-        .sidebar .menu li {
-            padding: 15px;
-            align-items: center;
-            cursor: pointer;
+    .sidebar .menu li a {
+        display: flex;
+        width: 100%;
+        padding: 15px;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .sidebar .menu li {
+    }
+
+        .sidebar .menu li img {
+            margin-right: 15px;
         }
 
-            .sidebar .menu li:hover {
-                background: #444;
-            }
+        .sidebar .menu li:not(.active):hover {
+            background: #444;
+        }
 
-            .sidebar .menu .active {
-                background: #fff;
-            }
+    .sidebar .menu .active {
+        background: #fff;
+    }
+
+        .sidebar .menu .active img {
+            filter: invert(0%);
+        }
+
+    .sidebar .menu img {
+        filter: invert(100%);
+    }
 
 .navbar-brand {
     font-size: 1rem !important;
     font-weight: 600;
 }
+
+.logout {
+    margin-top: auto; /* Pushes logout button to the bottom */
+}
+    .logout a {
+        padding: 15px;
+        display: flex;
+        width: 100%;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .logout img {
+        filter: invert(100%);
+        margin-right: 15px;
+    }
+    .logout:hover {
+        background: #444;
+    }
 /* Main Content */
 .main-content {
     margin-left: 250px; /* Add margin to account for sidebar width */
