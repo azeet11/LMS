@@ -18,7 +18,7 @@ public class UsersController : Controller
     }
 
     // GET: Users
-    public async Task<IActionResult> Index(string userType, string searchString, int? page)
+    public async Task<IActionResult> Index(string usersType, string searchString, int? page)
     {
         if (_context.Users == null)
         {
@@ -29,19 +29,10 @@ public class UsersController : Controller
                                          orderby b.UserType
                                          select b.UserType;
 
-
         var users = from b in _context.Users
-                        select b;
-
-        if (!string.IsNullOrEmpty(searchString))
-        {
-            users = users.Where(s => s.Name!.ToUpper().Contains(searchString.ToUpper()));
-        }
-
-        if (!string.IsNullOrEmpty(userType))
-        {
-            users = users.Where(x => x.UserType == userType);
-        }
+                    where (string.IsNullOrEmpty(usersType) || b.UserType == usersType)
+                        && (string.IsNullOrEmpty(searchString) || b.Name.ToLower().Contains(searchString.ToLower()))
+                    select b;
 
         int pageSize = 5;
         int pageNumber = (page ?? 1);
@@ -49,7 +40,8 @@ public class UsersController : Controller
         var UsersearchVM = new HomePageViewModel
         {
             UserType = new SelectList(await userTypeQuery.Distinct().ToListAsync()),
-            Users = users.ToPagedList(pageNumber, pageSize)
+            Users = users.ToPagedList(pageNumber, pageSize),
+            UsersType = usersType
         };
 
         return View(UsersearchVM);
