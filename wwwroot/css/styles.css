@@ -31,7 +31,7 @@ body {
     }
 
         .sidebar .logo img {
-            width: 50%;
+            width: 20%;
             filter: invert(100%);
         }
 
