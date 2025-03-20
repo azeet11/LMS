@@ -6,7 +6,7 @@ using X.PagedList.Extensions;
 
 namespace LibraryManagementSystem;
 
-[Authorize(Roles = "Admin")]
+
 public class BorrowingsController : Controller
 {
     private readonly LibraryContext _context;
@@ -16,6 +16,7 @@ public class BorrowingsController : Controller
         _context = context;
     }
 
+    [Authorize(Roles = "Admin,Member")]
     // GET: Borrowings
     public async Task<IActionResult> Index(string searchString,int? page)
     {
@@ -170,5 +171,46 @@ public class BorrowingsController : Controller
     private bool BorrowingExists(int id)
     {
         return _context.Borrowings.Any(e => e.Id == id);
+    }
+
+    [Authorize(Roles = "Member")]
+    public async Task<IActionResult> Borrow(int? page)
+    {
+        var userId = HttpContext.Session.GetString("UserId");
+        if (userId == null)
+        {
+            return RedirectToAction("Login");
+        }
+
+        var borrowedBooks = await _context.Borrowings
+            .Include(b => b.Book)
+            .Where(b => b.UserId == int.Parse(userId))
+            .ToListAsync();
+
+        var viewModel = new HomePageViewModel
+        {
+            BorrowedBooks = borrowedBooks.ToPagedList(page ?? 1, 5)
+        };
+
+        return View(viewModel);
+    }
+
+    [Authorize(Roles = "Member")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Return(int id)
+    {
+        var borrowing = await _context.Borrowings.FindAsync(id);
+        if (borrowing == null)
+        {
+            TempData["ErrorMessage"] = "Borrowing record not found.";
+            return RedirectToAction("Borrow", "Borrowings");
+        }
+
+        _context.Borrowings.Remove(borrowing);
+        await _context.SaveChangesAsync();
+
+        TempData["SuccessMessage"] = "Book returned successfully.";
+        return RedirectToAction("Borrow", "Borrowings");
     }
 }

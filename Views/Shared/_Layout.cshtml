@@ -52,8 +52,8 @@
                     <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
                         <a asp-action="Index" asp-controller="Home" class="text-white navbar-brand"> Home</a>
                     </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Borrowings" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Borrowings" class="text-white navbar-brand">Borrowing</a>
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Borrowings" && ViewContext.RouteData.Values["action"]?.ToString() == "Borrow" ? "active" : "")">
+                        <a asp-action="Borrow" asp-controller="Borrowings" class="text-white navbar-brand">Borrowing</a>
                     </li>
                     <li>
                         <a asp-action="Logout" asp-controller="Home" class="btn btn-danger"> Log Out</a>
