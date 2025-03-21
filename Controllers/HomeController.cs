@@ -79,10 +79,17 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = _context.Users
-                .FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password);
+            var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
 
-            if (user != null)
+            if (user == null)
+            {
+                ModelState.AddModelError("Email", "Email is not registered.");
+            }
+            else if (user.Password != model.Password)
+            {
+                ModelState.AddModelError("Password", "Password is incorrect.");
+            }
+            else
             {
                 // Set user session or authentication cookie
                 HttpContext.Session.SetString("UserId", user.Id.ToString());
@@ -91,10 +98,10 @@ public class HomeController : Controller
                 HttpContext.Session.SetString("UserType", user.UserType);
 
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Role, user.Role)
-        };
+            {
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
 
                 var claimsIdentity = new ClaimsIdentity(claims, "CookieAuthentication");
                 var authProperties = new AuthenticationProperties
@@ -113,13 +120,10 @@ public class HomeController : Controller
                     return RedirectToAction("Index");
                 }
             }
-
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         }
 
         return View(model);
     }
-
 
     public async Task<IActionResult> Logout()
     {

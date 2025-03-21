@@ -8,7 +8,7 @@
 }
 <link rel="stylesheet" href="~/css/error.css" />
 
-@if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") == "Member")
+@if (HttpContextAccessor.HttpContext?.Session?.GetString("UserRole") == "Member")
 {
     @if (TempData["ErrorMessage"] != null)
     {
@@ -33,6 +33,7 @@
                 <th>Author</th>
                 <th>Borrow Date</th>
                 <th>Return Date</th>
+                <th>Fine</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -40,10 +41,11 @@
             @foreach (var borrowing in Model.BorrowedBooks)
             {
                 <tr>
-                    <td>@borrowing.Book.Title</td>
-                    <td>@borrowing.Book.Author</td>
-                    <td>@borrowing.BorrowDate.ToShortDateString()</td>
-                    <td>@borrowing.ReturnDate.ToShortDateString()</td>
+                    <td>@borrowing.Book?.Title</td>
+                    <td>@borrowing.Book?.Author</td>
+                    <td>@borrowing.BorrowDate</td>
+                    <td>@borrowing.ReturnDate</td>
+					<td>@borrowing.Fine</td>
                     <td>
                         <form asp-action="Return" asp-controller="Borrowings" method="post">
                             <input type="hidden" name="id" value="@borrowing.Id" />

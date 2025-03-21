@@ -58,6 +58,7 @@ public class BooksController : Controller
 
 
     // GET: Books/Details/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -76,6 +77,7 @@ public class BooksController : Controller
     }
 
     // GET: Books/Create
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         return View();
@@ -96,6 +98,7 @@ public class BooksController : Controller
     }
 
     // GET: Books/Edit/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -112,6 +115,7 @@ public class BooksController : Controller
     }
 
     // POST: Books/Edit/5
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Publisher,Year,Pages,Language")] Book book)
@@ -145,6 +149,7 @@ public class BooksController : Controller
     }
 
     // GET: Books/Delete/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -163,6 +168,7 @@ public class BooksController : Controller
     }
 
     // POST: Books/Delete/5
+    [Authorize(Roles = "Admin")]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -189,6 +195,7 @@ public class BooksController : Controller
     public async Task<IActionResult> Borrow(int bookId)
     {
         var userId = HttpContext.Session.GetString("UserId");
+        int ReturningDays = 7;
         if (userId == null)
         {
             return RedirectToAction("Login", "Home");
@@ -199,7 +206,7 @@ public class BooksController : Controller
         if (userBorrowingsCount >= 3)
         {
             TempData["ErrorMessage"] = "You cannot borrow more than 3 books.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Borrow", "Borrowings");
         }
 
         var borrowing = new Borrowing
@@ -207,7 +214,7 @@ public class BooksController : Controller
             UserId = int.Parse(userId),
             BookId = bookId,
             BorrowDate = DateTime.Now,
-            ReturnDate = DateTime.Now.AddDays(14) // Example return date
+            ReturnDate = DateTime.Now.AddDays(ReturningDays) // Example return date
         };
 
         _context.Borrowings.Add(borrowing);

@@ -1,5 +1,4 @@
 using LibraryManagementSystem.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +22,14 @@ builder.Services.AddAuthentication("CookieAuthentication")
     });
 
 var app = builder.Build();
+
+// Seed the database with the default admin user and books
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    SeedData.Initialize(services);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

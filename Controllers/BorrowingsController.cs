@@ -16,8 +16,8 @@ public class BorrowingsController : Controller
         _context = context;
     }
 
-    [Authorize(Roles = "Admin,Member")]
     // GET: Borrowings
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Index(string searchString,int? page)
     {
         if (_context.Borrowings == null)
@@ -45,6 +45,7 @@ public class BorrowingsController : Controller
     }
 
     // GET: Borrowings/Details/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -63,6 +64,7 @@ public class BorrowingsController : Controller
     }
 
     // GET: Borrowings/Create
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         return View();
@@ -85,6 +87,7 @@ public class BorrowingsController : Controller
     }
 
     // GET: Borrowings/Edit/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -103,6 +106,7 @@ public class BorrowingsController : Controller
     // POST: Borrowings/Edit/5
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,BookId,BorrowDate,ReturnDate,Book")] Borrowing borrowing)
@@ -136,6 +140,7 @@ public class BorrowingsController : Controller
     }
 
     // GET: Borrowings/Delete/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -154,6 +159,7 @@ public class BorrowingsController : Controller
     }
 
     // POST: Borrowings/Delete/5
+    [Authorize(Roles = "Admin")]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)

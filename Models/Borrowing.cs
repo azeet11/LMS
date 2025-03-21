@@ -4,9 +4,10 @@ namespace LibraryManagementSystem.Models;
 
 public class Borrowing
 {
-    private const float DailyFineRate = 10f;
     [Key]
     public int Id { get; set; }
+
+    private const float DailyFineRate = 10f;
 
     [Required(ErrorMessage = "User ID is required")]
     public int UserId { get; set; }
