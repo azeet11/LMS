@@ -1,5 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
+@functions {
+    bool IsActive(string controller, string action)
+    {
+        return (ViewContext.RouteData.Values["controller"]?.ToString() == controller &&
+                ViewContext.RouteData.Values["action"]?.ToString() == action);
+    }
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,9 +16,10 @@
     <title>@ViewData["Title"] - LibraryManagementSystem</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="icon" type="image/png" href="~/favicon.png" />
+    <link rel="icon" type="image/svg" href="~/img/logo.svg" />
     <link rel="stylesheet" href="~/css/styles.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+
 </head>
 <body>
     @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") != null)
@@ -19,42 +27,45 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="logo">
-                <img src="~/favicon.png" alt="Library Management System" class="align-cen">
+                <img src="~/img/logo.svg" alt="Library Management System" class="align-cen">
             </div>
             @if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") == "Admin")
             {
-                <ul class="menu align-content-center">
-                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "AdminDashboard" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Home" class="text-white navbar-brand">Dashboard</a>
+                <ul class="menu ">
+                    <li class="@(IsActive("Home", "AdminDashboard") ? "active" : "")">
+                        <a asp-action="Index" asp-controller="Home" class="navbar-brand @(IsActive("Home", "AdminDashboard") ? "text-dark" : "text-white")"> <img src="~/img/icons/dashboard.svg" height="20" width="20" alt="Dashboard" class="align-cen">Dashboard</a>
                     </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Books" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Books" class="text-white navbar-brand"> Books</a>
+                    <li class="@(IsActive("Books", "Index") ? "active" : "")">
+                        <a asp-action="Index" asp-controller="Books" class="navbar-brand @(IsActive("Books", "Index")  ? "text-dark" : "text-white")"> <img src="~/img/icons/books.svg" height="20" width="20" alt="Books" class="align-cen">Books</a>
                     </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Borrowings" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Borrowings" class="text-white navbar-brand">Borrowing</a>
+                    <li class="@(IsActive("Borrowings", "Index") ? "active" : "")">
+                        <a asp-action="Index" asp-controller="Borrowings" class="navbar-brand @(IsActive("Borrowings", "Index") ? "text-dark" : "text-white")"><img src="~/img/icons/borrowings.svg" height="20" width="20" alt="Borrowing" class="align-cen">Borrowing</a>
                     </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Users" class="text-white navbar-brand">Users</a>
+                    <li class="@(IsActive("Users", "Index") ? "active" : "")">
+                        <a asp-action="Index" asp-controller="Users" class="navbar-brand @(IsActive("Users", "Index")? "text-dark" : "text-white")"><img src="~/img/icons/users.svg" height="20" width="20" alt="Borrowing" class="align-cen">Users</a>
                     </li>
-                    <li>
-                        <a asp-action="Logout" asp-controller="Home" class="btn btn-danger"> Log Out</a>
+                    <li class="@(IsActive("Reports", "Index") ? "active" : "")">
+                        <a asp-action="Index" asp-controller="Reports" class="navbar-brand @(IsActive("Reports", "Index") ? "text-dark" : "text-white")"><img src="~/img/icons/reports.svg" height="20" width="20" alt="Borrowing" class="align-cen">Reports</a>
                     </li>
                 </ul>
+                <div class="logout">
+                    <a asp-action="Logout" asp-controller="Home" class="navbar-brand text-white"><img src="~/img/icons/logout.svg" height="20" width="20" alt="Logout" class="align-cen"> Log Out</a>
+                </div>
             }
 
             @if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") == "Member")
             {
                 <ul class="menu align-content-center">
-                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Books" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Books" class="text-white navbar-brand"> Books</a>
+                    <li class="@(IsActive("Home", "Index") ? "active" : "")">
+                        <a asp-action="Index" asp-controller="Home" class="navbar-brand @(IsActive("Home", "Index") ? "text-dark" : "text-white")"><img src="~/img/icons/dashboard.svg" height="20" width="20" alt="Home" class="align-cen">Home</a>
                     </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Borrowings" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <a asp-action="Index" asp-controller="Borrowings" class="text-white navbar-brand">Borrowing</a>
-                    </li>
-                    <li>
-                        <a asp-action="Logout" asp-controller="Home" class="btn btn-danger"> Log Out</a>
+                    <li class="@(IsActive("Borrowings", "Index") ? "active" : "")">
+                        <a asp-action="Index" asp-controller="Borrowings" class="navbar-brand @(IsActive("Borrowings", "Index") ? "text-dark" : "text-white")"><img src="~/img/icons/borrowings.svg" height="20" width="20" alt="Borrowing" class="align-cen">Borrowing</a>
                     </li>
                 </ul>
+                <div class="logout">
+                    <a asp-action="Logout" asp-controller="Home" class="navbar-brand text-white"><img src="~/img/icons/logout.svg" height="20" width="20" alt="Logout" class="align-cen"> Log Out</a>
+                </div>
             }
         </div>
 
@@ -63,9 +74,9 @@
             <div class="header">
                 <div class="user-info">
                     <span>@HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
-                    <small>@HttpContextAccessor.HttpContext.Session.GetString("UserRole")</small>
-                    <small>@HttpContextAccessor.HttpContext.Session.GetString("UserType")</small>
+                    <small>@HttpContextAccessor.HttpContext.Session.GetString("UserRole") - @HttpContextAccessor.HttpContext.Session.GetString("UserType")</small>
                 </div>
+                <div class="right-section"><strong id="currentTime"></strong></div>
             </div>
 
             <main role="main" class="pb-3">
@@ -84,5 +95,23 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script>
+        function updateTime() 
+        {
+            const now = new Date();
+            const formattedTime = now.toLocaleTimeString('en-US', 
+                                    { hour: '2-digit', minute: '2-digit', second: '2-digit' }) 
+                                    + ', ' + now.toLocaleDateString('en-US', 
+                                    { month: 'short', day: '2-digit', year: 'numeric' });
+            document.getElementById('currentTime').innerText = formattedTime;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call to set the time immediately
+    </script>
 </body>
 </html>

@@ -1,0 +1,24 @@
+﻿@model IEnumerable<dynamic>
+
+<h2>Borrowed Books</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book Title</th>
+            <th>User Name</th>
+            <th>Borrow Date</th>
+            <th>Return Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Book.Title</td>
+                <td>@item.User.Name</td>
+                <td>@item.BorrowDate.ToShortDateString()</td>
+                <td>@item.ReturnDate.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>

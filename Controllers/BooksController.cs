@@ -1,9 +1,9 @@
-﻿// File: Controllers/BooksController.cs
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using X.PagedList.Extensions;
 
 namespace LibraryManagementSystem;
 
@@ -19,7 +19,7 @@ public class BooksController : Controller
 
     // GET: Books
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Index(string bookAuthor, string searchString)
+    public async Task<IActionResult> Index(string bookAuthor, string searchString, int? page)
     {
         if (_context.Books == null)
         {
@@ -44,16 +44,18 @@ public class BooksController : Controller
             books = books.Where(x => x.Author == bookAuthor);
         }
 
+        int pageSize = 5;
+        int pageNumber = (page ?? 1);
+
         var booksearchVM = new HomePageViewModel
         {
             Author = new SelectList(await authorQuery.Distinct().ToListAsync()),
-            Books = await books.ToListAsync(),
-            //BookAuthor = bookAuthor,
-            //SearchString = searchString
+            Books = books.ToPagedList(pageNumber, pageSize)
         };
 
         return View(booksearchVM);
     }
+
 
     // GET: Books/Details/5
     public async Task<IActionResult> Details(int? id)
@@ -211,6 +213,8 @@ public class BooksController : Controller
         _context.Borrowings.Add(borrowing);
         await _context.SaveChangesAsync();
 
-        return RedirectToAction("Index", "Home");
+        TempData["SuccessMessage"] = "Successfully borrowed";
+        return RedirectToAction(nameof(Index));
     }
+
 }

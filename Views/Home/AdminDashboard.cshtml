@@ -1,28 +1,70 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@model LibraryManagementSystem.Models.AdminDashboardViewModel
+@using Microsoft.AspNetCore.Http;
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<h2>Admin Dashboard</h2>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="~/css/dashboard.css">
 
-<p>Welcome, @HttpContextAccessor.HttpContext.Session.GetString("UserName")!</p>
+<div class="col-md-9">
+    <div class="d-flex justify-content-between align-items-center py-3">
+        <h2>Admin Dashboard</h2>
+    </div>
+    <div class="row">
+        <!-- Left Side: Chart -->
+        <div class="col-md-6">
+            <canvas id="pieChart"></canvas>
+        </div>
 
-<br>
-<h3>Users</h3>
-<a asp-controller="Users" asp-action="Index" class="btn btn-primary">Manage Users</a>
+        <!-- Right Side: Admins and Overdue Borrowers -->
+        <div class="col-md-6">
+            <div class="right-sections">
+                <!-- Admins Section -->
+                <div class="section">
+                    <h4>Top 3 Admins</h4>
+                    <ul>
+                        @foreach (var admin in Model.TopAdmins)
+                        {
+                            <li>
+                                @admin.Name <span>Admin ID: @admin.Id</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
 
-<br>
-<br>
-<h3>Books</h3>
-<a asp-controller="Books" asp-action="Index" class="btn btn-primary">Manage Books</a>
+                <!-- Overdue Borrowers Section -->
+                <div class="section">
+                    <h4>Top 3 Overdue Borrowers</h4>
+                    <ul>
+                        @foreach (var borrower in Model.TopOverdueBorrowers)
+                        {
+                            <li>
+                                @borrower.User.Name <span>Borrowed ID: @borrower.Id</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<br>
-<br>
-<h3>Books Borrowed</h3>
-<a asp-controller="Borrowings" asp-action="Index" class="btn btn-primary">Manage Borrowings</a>
-
-<br>
-<br>
-<a asp-action="Logout" asp-controller="Home" class="btn btn-danger">Logout</a>
+<!-- Chart JS Initialization -->
+<script>
+    const ctx = document.getElementById('pieChart').getContext('2d');
+    const pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Borrowed', 'Overdued'],
+            datasets: [{
+                data: [@Model.TotalBorrowedBooks, @Model.TotalOverdueBooks], // Example data
+                backgroundColor: ['#ff6384', '#36a2eb']
+            }]
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

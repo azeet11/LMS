@@ -1,0 +1,65 @@
+﻿@model LibraryManagementSystem.Models.HomePageViewModel
+@using Microsoft.AspNetCore.Http
+@using X.PagedList.Mvc.Core
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Borrow";
+}
+<link rel="stylesheet" href="~/css/error.css" />
+
+@if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") == "Member")
+{
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <h3>Books Borrowed by You</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var borrowing in Model.BorrowedBooks)
+            {
+                <tr>
+                    <td>@borrowing.Book.Title</td>
+                    <td>@borrowing.Book.Author</td>
+                    <td>@borrowing.BorrowDate.ToShortDateString()</td>
+                    <td>@borrowing.ReturnDate.ToShortDateString()</td>
+                    <td>
+                        <form asp-action="Return" asp-controller="Borrowings" method="post">
+                            <input type="hidden" name="id" value="@borrowing.Id" />
+                            <button type="submit" class="btn btn-danger">Return</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        @Html.PagedListPager(Model.BorrowedBooks, page => Url.Action("Borrow", new { page }))
+    </div>
+}
+else
+{
+    @await Html.PartialAsync("_LoginPartial", new LoginViewModel())
+}

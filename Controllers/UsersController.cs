@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using X.PagedList.Extensions;
 
 namespace LibraryManagementSystem;
 
@@ -16,9 +18,33 @@ public class UsersController : Controller
     }
 
     // GET: Users
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string usersType, string searchString, int? page)
     {
-        return View(await _context.Users.ToListAsync());
+        if (_context.Users == null)
+        {
+            return Problem("Entity set 'LibraryContext.Users' is null.");
+        }
+
+        IQueryable<string> userTypeQuery = from b in _context.Users
+                                         orderby b.UserType
+                                         select b.UserType;
+
+        var users = from b in _context.Users
+                    where (string.IsNullOrEmpty(usersType) || b.UserType == usersType)
+                        && (string.IsNullOrEmpty(searchString) || b.Name.ToLower().Contains(searchString.ToLower()))
+                    select b;
+
+        int pageSize = 5;
+        int pageNumber = (page ?? 1);
+
+        var UsersearchVM = new HomePageViewModel
+        {
+            UserType = new SelectList(await userTypeQuery.Distinct().ToListAsync()),
+            Users = users.ToPagedList(pageNumber, pageSize),
+            UsersType = usersType
+        };
+
+        return View(UsersearchVM);
     }
 
     // GET: Users/Details/5
@@ -93,7 +119,24 @@ public class UsersController : Controller
         {
             try
             {
-                _context.Update(user);
+                var existingUser = await _context.Users.FindAsync(id);
+                if (existingUser == null)
+                {
+                    return NotFound();
+                }
+
+                existingUser.Name = user.Name;
+                existingUser.Email = user.Email;
+                existingUser.Role = user.Role;
+                existingUser.UserType = user.UserType;
+
+                // Only update the password if a new one is provided
+                if (!string.IsNullOrEmpty(user.Password) && user.Password != "********")
+                {
+                    existingUser.Password = user.Password;
+                }
+
+                _context.Update(existingUser);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
