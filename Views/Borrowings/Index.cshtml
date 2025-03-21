@@ -34,6 +34,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.BorrowedBooks[0].ReturnDate)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BorrowedBooks[0].Fine)
+            </th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -55,6 +58,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ReturnDate)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fine)
+                </td>
             <td>
                 <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.Id">Details</a> |

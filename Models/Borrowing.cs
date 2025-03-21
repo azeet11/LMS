@@ -4,6 +4,7 @@ namespace LibraryManagementSystem.Models;
 
 public class Borrowing
 {
+    private const float DailyFineRate = 10f;
     [Key]
     public int Id { get; set; }
 
@@ -21,9 +22,27 @@ public class Borrowing
     [DataType(DataType.Date)]
     public DateTime ReturnDate { get; set; }
 
+    public float? Fine { 
+        get{
+            var currentDate = DateTime.Now;
+            if (currentDate > ReturnDate)
+            {
+                var overdueDays = (currentDate - ReturnDate).Days;
+                return overdueDays * DailyFineRate;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    }
     // Navigation property for Book
     public Book? Book { get; set; }
 
     // Navigation property for User
     public User? User { get; set; }
+    public void CalculateFine()
+    {
+        
+    }
 }
